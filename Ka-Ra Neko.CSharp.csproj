@@ -75,7 +75,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\_Scripts\EnemyAttackScript.cs" />
     <Compile Include="Assets\_Scripts\EnemyBehaviour.cs" />
+    <Compile Include="Assets\_Scripts\GameController.cs" />
+    <Compile Include="Assets\_Scripts\MenuControls.cs" />
     <Compile Include="Assets\_Scripts\PlayerControl.cs" />
     <Compile Include="Assets\_Scripts\SkyControl.cs" />
   </ItemGroup>

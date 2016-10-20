@@ -118,5 +118,20 @@ public class PlayerControl : MonoBehaviour {
         Debug.Log(this._isGrounded);
     }
 
+    IEnumerator _damager() // colour effect when hit
+    {
+        int looper = 0;
+
+        if(looper <= 4)
+        {
+            spriteRender.color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            spriteRender.color = Color.white;
+            yield return new WaitForSeconds(0.1f);
+            looper++;
+        }
+
+        Debug.Log("heya");
+    }
 
 }

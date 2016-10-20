@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 217b1d94113561e4089a0f07daf091c6
-timeCreated: 1476720261
+timeCreated: 1476918423
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -101,10 +101,10 @@ TextureImporter:
       name: BADGuy_idle1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 626
-        height: 1105
+        x: 11
+        y: 8
+        width: 605
+        height: 1085
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
