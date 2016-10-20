@@ -30,7 +30,7 @@ public class SkyControl : MonoBehaviour {
     IEnumerator Delay()
     {
         this.Move();
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(5*Time.deltaTime);
         this.Move();
     }
 

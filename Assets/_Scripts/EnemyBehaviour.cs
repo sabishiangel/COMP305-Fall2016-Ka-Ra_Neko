@@ -6,22 +6,31 @@ public class EnemyBehaviour : MonoBehaviour {
     //Private Instance Variables
     private Transform _transform;
     private Rigidbody2D _rigidbody;
+    private SpriteRenderer spriteRender;
     private bool _isGrounded;
     private bool _GroundAhead;
-    private SpriteRenderer spriteRender;
     private bool _isFacingLeft;
     private bool _isPlayerThere;
+    private Collider2D enemy;
+    private float timeTilNextFire = 5.0f;
 
     //Public Instance Variables
     public float Speed = 5f;
     public float MaxSpeed = 8f;
+    public float timeBetweenFires = 3f;
+    public float lastFired = -100f;
     public Transform sightStart;
     public Transform sightEnd;
     public Transform playerInSight;
-    
+    public Transform playerLocation;
+    public GameObject attack;
+    public GameObject player;
+    public GameObject goodVibe;
 
-	// Use this for initialization
-	void Start () {
+
+
+    // Use this for initialization
+    void Start () {
         this._transform = GetComponent<Transform>();
         this._rigidbody = GetComponent<Rigidbody2D>();
         this._isGrounded = false;
@@ -29,7 +38,12 @@ public class EnemyBehaviour : MonoBehaviour {
         this.spriteRender = GetComponent<SpriteRenderer>();
         this._isFacingLeft = true;
         this._isPlayerThere = false;
-	}
+        this.enemy = GetComponent<Collider2D>();
+
+        playerLocation = GameObject.Find("Hero").transform;
+        if (!playerLocation)
+            Debug.Log("ERROR could not find Player!");
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -52,9 +66,15 @@ public class EnemyBehaviour : MonoBehaviour {
 
             if(this._isPlayerThere == true)
             {
-                this.Speed *= 2;
-                if(this.Speed >=MaxSpeed)
-                { this.Speed = MaxSpeed; }
+                if(this.gameObject.CompareTag("Boss"))
+                { Invoke("Attack", 1f); }
+
+                if(this.gameObject.CompareTag("Enemy"))
+                {
+                    this.Speed *= 2;
+                    if (this.Speed >= MaxSpeed)
+                    { this.Speed = MaxSpeed; }
+                }
             }
         }
         
@@ -73,8 +93,37 @@ public class EnemyBehaviour : MonoBehaviour {
         if (other.gameObject.CompareTag("Enemy"))
         { this.flip(); }
 
-        if (other.gameObject.CompareTag("Platform"))
+        if (other.gameObject.name == "Bench")
         { this.flip(); }
+
+        if (other.gameObject.name == "Telebooth")
+        { this.flip(); }
+
+        if (other.gameObject.CompareTag("Love"))
+        {
+            Destroy(this.gameObject);
+            Instantiate(goodVibe, transform.position, transform.rotation);
+                
+        }
+
+        if (other.gameObject.CompareTag("Love"))
+        {
+            Destroy(this.gameObject);
+            Instantiate(goodVibe, transform.position, transform.rotation);
+
+            if (this.gameObject.name == "Boss")
+            {
+                int loop = 4;
+
+                if(loop >= 0)
+                {
+                  Instantiate(goodVibe, transform.position, transform.rotation);
+                  loop++;
+                }
+                
+            }
+
+        }
 
     }
 
@@ -95,7 +144,7 @@ public class EnemyBehaviour : MonoBehaviour {
             theScale.x *= 1;
             _transform.localScale = theScale;
 
-            Debug.Log(_transform.localScale.x);
+            //Debug.Log(_transform.localScale.x);
         }
         else
         {
@@ -106,5 +155,24 @@ public class EnemyBehaviour : MonoBehaviour {
             _transform.localScale = theScale;
 
         }
+    }
+
+    void Attack()
+    {
+
+        if (Time.time < lastFired + timeBetweenFires)
+        {
+            return;
+        }
+
+        lastFired = Time.time;
+
+        GameObject attackShot = (GameObject)Instantiate(attack, transform.position, transform.rotation);
+        attackShot.transform.position = transform.position;
+
+        Vector2 direction = playerLocation.transform.position - attackShot.transform.position;
+
+        attackShot.GetComponent<AttackProjectiles>().setDirection(direction);
+
     }
 }

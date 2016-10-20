@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class MenuController : MonoBehaviour
+public class MenuControls : MonoBehaviour
 {
     public Button startButton;
     // Use this for initialization
@@ -23,5 +23,10 @@ public class MenuController : MonoBehaviour
     public void startbutton_Click()
     {
         SceneManager.LoadScene("Play");
+    }
+
+    public void instruction_Click()
+    {
+        SceneManager.LoadScene("Instruction");
     }
 }

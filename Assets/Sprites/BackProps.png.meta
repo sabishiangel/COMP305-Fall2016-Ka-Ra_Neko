@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 54c3bb9dcb93d384cb919cec417c2bb7
-timeCreated: 1476894356
+timeCreated: 1476941537
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -259,8 +259,8 @@ TextureImporter:
         serializedVersion: 2
         x: 518
         y: 143
-        width: 200
-        height: 206
+        width: 197
+        height: 203
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -270,10 +270,10 @@ TextureImporter:
       name: Balcony_2
       rect:
         serializedVersion: 2
-        x: 723
-        y: 156
-        width: 167
-        height: 194
+        x: 728
+        y: 143
+        width: 158
+        height: 202
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -283,10 +283,10 @@ TextureImporter:
       name: Balcony_3
       rect:
         serializedVersion: 2
-        x: 896
-        y: 153
-        width: 165
-        height: 196
+        x: 898
+        y: 143
+        width: 159
+        height: 202
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -296,10 +296,10 @@ TextureImporter:
       name: Balcony_4
       rect:
         serializedVersion: 2
-        x: 1069
-        y: 145
-        width: 197
-        height: 202
+        x: 1073
+        y: 142
+        width: 193
+        height: 204
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
