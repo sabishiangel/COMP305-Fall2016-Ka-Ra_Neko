@@ -27,16 +27,20 @@ public class GameController : MonoBehaviour
     public Text victoryLabel;
     public Button restartButton;
     public Button instructions;
+    public Button restart2Button;
 
     [Header("Game Objects")]
     public GameObject KaRa;
     public GameObject Good_Vibes;
     public GameObject bad_guy;
     public GameObject bad_boss;
+    public ParticleSystem particle1;
+    public ParticleSystem particle2;
 
     [Header("Music")]
     public AudioSource endMusic;
     public AudioSource winMusic;
+    public AudioSource backgroundMusic;
 
     // Use this for initialization
     void Start()
@@ -47,6 +51,10 @@ public class GameController : MonoBehaviour
         restartButton.gameObject.SetActive(false);
         this.victoryLabel.gameObject.SetActive(false);
         this.instructions.gameObject.SetActive(false);
+        backgroundMusic.Play();
+        backgroundMusic.loop = true;
+        particle1.Stop();
+        particle2.Stop();
 
     }
 
@@ -67,10 +75,13 @@ public class GameController : MonoBehaviour
         this.finalLabel.gameObject.SetActive(true);
         this.finalLabel.text = "Score: " + this.score;
         this.restartButton.gameObject.SetActive(true);
+        this.restart2Button.gameObject.SetActive(false);
         this.KaRa.SetActive(false);
         this.Good_Vibes.SetActive(false);
         this.bad_guy.SetActive(false);
         this.bad_boss.SetActive(false);
+        backgroundMusic.Stop();
+        backgroundMusic.loop = false;
         endMusic.Play();
         endMusic.loop = true;
     }
@@ -85,12 +96,19 @@ public class GameController : MonoBehaviour
         this.victoryLabel.gameObject.SetActive(true);
         this.finalLabel.text = "Score: " + this.score;
         this.restartButton.gameObject.SetActive(true);
+        this.restart2Button.gameObject.SetActive(false);
         this.KaRa.SetActive(false);
-        this.Good_Vibes.SetActive(false);
         this.bad_guy.SetActive(false);
         this.bad_boss.SetActive(false);
+        backgroundMusic.Stop();
+        backgroundMusic.loop = false;
         winMusic.Play();
         winMusic.loop = true;
+        particle1.Play();
+        particle2.Play();
+
+        if (this.Good_Vibes.activeInHierarchy == true)
+        { this.Good_Vibes.SetActive(false); }
     }
 
     public void restart_click()//returns to play scene start

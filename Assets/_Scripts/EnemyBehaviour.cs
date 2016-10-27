@@ -12,20 +12,19 @@ public class EnemyBehaviour : MonoBehaviour {
     private bool _isFacingLeft;
     private bool _isPlayerThere;
     private Collider2D enemy;
-    private float timeTilNextFire = 5.0f;
 
     //Public Instance Variables
     public float Speed = 5f;
     public float MaxSpeed = 8f;
     public float timeBetweenFires = 3f;
     public float lastFired = -100f;
+    public float timeTilNextFire = 1f;
     public Transform sightStart;
     public Transform sightEnd;
     public Transform playerInSight;
     public Transform playerLocation;
     public GameObject attack;
     public GameObject goodVibe;
-    public int counter = 5;
 
 
 
@@ -48,39 +47,42 @@ public class EnemyBehaviour : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        if(this._isGrounded)
+
+        //Check if player is there
+        this._isPlayerThere = Physics2D.Linecast(this.sightStart.position, this.playerInSight.position, 1 << LayerMask.NameToLayer("Player"));
+
+        //If normal enemy is grounded, move
+        if (this._isGrounded && this.gameObject.CompareTag("Enemy"))
         {
             this._rigidbody.velocity = new Vector2(this._transform.localScale.x, 0) * this.Speed;
-
-            this._GroundAhead = Physics2D.Linecast(this.sightStart.position, this.sightEnd.position, 1 << LayerMask.NameToLayer("Solid"));
-
-            Debug.DrawLine(this.sightStart.position, this.sightEnd.position);
-
-            this._isPlayerThere = Physics2D.Linecast(this.sightStart.position, this.playerInSight.position, 1 << LayerMask.NameToLayer("Player"));
-
-            Debug.DrawLine(this.sightStart.position, this.playerInSight.position);
+            this._GroundAhead = Physics2D.Linecast(this.sightStart.position, this.sightEnd.position, 1 << LayerMask.NameToLayer("Solid"));           
 
             if (this._GroundAhead == false)
             {
                 this.flip();
             }
 
-            //if player is in sight
-            if(this._isPlayerThere == true)
-            {
-                if(this.gameObject.CompareTag("Boss"))
-                { Invoke("Attack", 1f); }
+        }
 
-                if(this.gameObject.CompareTag("Enemy"))
-                {
-                    this.Speed *= 2;
-                    if (this.Speed >= MaxSpeed)
-                    { this.Speed = MaxSpeed; }
-                }
+        //Lines to help see sight
+        Debug.DrawLine(this.sightStart.position, this.playerInSight.position);
+        Debug.DrawLine(this.sightStart.position, this.sightEnd.position);
+
+        //if player is in sight
+        if (this._isPlayerThere == true)
+        {
+            if (this.gameObject.CompareTag("Boss")) //if boss, attack ability enabled
+            { Invoke("Attack", timeTilNextFire); }
+
+            if (this.gameObject.CompareTag("Enemy"))
+            {
+                this.Speed *= 2;
+                if (this.Speed >= MaxSpeed)
+                { this.Speed = MaxSpeed; }
             }
         }
-        
-	}
+
+    }
 
     private void OnCollisionStay2D(Collision2D other)
     {
@@ -97,16 +99,22 @@ public class EnemyBehaviour : MonoBehaviour {
         if (other.gameObject.CompareTag("Enemy"))
         { this.flip(); }
 
-        if(counter > 0)
-        {
-            if (other.gameObject.name == "Bench (" + counter + ")")
-            { this.flip(); }
-            counter = counter - 1;
-        }
-
-        if (other.gameObject.name == "Bench")
+        if (other.gameObject.name == "Bench (1)")
         { this.flip(); }
 
+        if (other.gameObject.name == "Bench (2)")
+        { this.flip(); }
+
+        if (other.gameObject.name == "Bench (3)")
+        { this.flip(); }
+
+        if (other.gameObject.name == "Bench (4)")
+        { this.flip(); }
+
+        if (other.gameObject.name == "Bench (5)")
+        { this.flip(); }
+
+        if (other.gameObject.name == "Bench")
         { this.flip(); }
 
         if (other.gameObject.name == "Exit")
@@ -140,6 +148,11 @@ public class EnemyBehaviour : MonoBehaviour {
                 
             }
 
+        }
+
+        if (other.gameObject.CompareTag("Anger"))
+        {
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), other.gameObject.GetComponent<Collider2D>());
         }
 
     }

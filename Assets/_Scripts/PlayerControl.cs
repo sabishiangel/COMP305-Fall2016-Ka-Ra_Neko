@@ -17,21 +17,29 @@ public class PlayerControl : MonoBehaviour {
     //Public Instance Variables
     public Camera _camera;
     public Animator animator;
-    public Transform spawnPoint;
-    public AudioSource backgroundMusic;
     public GameObject Enemy;
     public GameObject attack;
     public float timeBetweenFires = 3f;
     public float lastFired = -100f;
     public float attackSpeed;
-
-    //Public Properties
     public float velocity = 10f;
     public float jumpForce = 100f;
     public GameController gameController; //references game controller script
+
+    [Header("Transforms")]
+    public Transform spawnPoint;
     public Transform sightStart;
     public Transform sightEnd;
 
+    [Header("Sounds")]
+    public AudioSource hurt;
+    public AudioSource jump;
+    public AudioSource point;
+    public AudioSource attackSound;
+
+
+
+    //Public Properties
 
     public int scoreValue //updates score
     {
@@ -49,7 +57,7 @@ public class PlayerControl : MonoBehaviour {
         set
         {
             this._healthValue = value;
-            this.gameController.livesLabel.text = "Health: " + this._healthValue;
+            this.gameController.livesLabel.text = "Health: " + this._healthValue + "%";
         }
     }
 
@@ -95,12 +103,6 @@ public class PlayerControl : MonoBehaviour {
             }
             //Debug.Log (this._move);
 
-            //Jump Input
-            if ((Input.GetKeyDown(KeyCode.Space)))
-            {
-                this._jump = 1;
-            }
-
             //Movement
             this._rigidbody.AddForce(new Vector2(this._move * Mathf.Clamp(this.velocity, 1f, 10f), Mathf.Clamp(this._jump, 0f, 1f) * Mathf.Clamp(this.jumpForce, 0f, 220f)), ForceMode2D.Force);
         }
@@ -120,8 +122,17 @@ public class PlayerControl : MonoBehaviour {
             {
                 this.animator.SetInteger("HeroState", 3);
                 this.Attack();
+                attackSound.Play();
             }
 
+        }
+
+        //Jump Input
+        if ((Input.GetKeyDown(KeyCode.Space)))
+        {
+            this._jump = 1;
+            jump.Play();
+            this._isGrounded = false;
         }
 
     }
@@ -136,7 +147,7 @@ public class PlayerControl : MonoBehaviour {
         this._isGrounded = false;
         this.spriteRender = GetComponent<SpriteRenderer>();
         this.invincible = false;
-        this.powerValue = 5;
+        this.powerValue = 0;
         this._healthValue = 100;
         this.attackSpeed = 20f;
 }
@@ -170,35 +181,36 @@ public class PlayerControl : MonoBehaviour {
         {
             this._transform.position = this.spawnPoint.position;
             this.healthValue -= 10;
+            hurt.Play();
+            StartCoroutine(_damager());
         }
 
         //when player reaches the goal
         if (other.gameObject.CompareTag("Finish"))
         {
-            this.scoreValue += 50;
-            gameController.winGame();
+            if (this.scoreValue >= 620)
+            {
+                this.scoreValue += 157;
+                gameController.winGame();
+            }
+
+            else
+            {
+                this.scoreValue += 50;
+                gameController.winGame();
+            }
         }
 
         //hit by enemy
         if (other.gameObject.CompareTag("Enemy")) // hurt
         {
             this.animator.SetInteger("HeroState", 4);
+            hurt.Play();
             this.healthValue -= 10;
-            invincible = true;
-
-            if(invincible == true)
-            {
-                Physics2D.IgnoreCollision(Enemy.transform.GetComponent<Collider2D>(), this._transform.GetComponent<Collider2D>());
-                Debug.Log("Invincible is " + invincible);
-            }
-
             StartCoroutine(_damager());
-            Invoke("resetInvulnerability", 5 * Time.deltaTime);
 
             if (healthValue <= 0)
             {
-                backgroundMusic.Stop();
-                backgroundMusic.loop = false;
                 gameController.endGame();
             }
 
@@ -209,14 +221,11 @@ public class PlayerControl : MonoBehaviour {
         {
             this.animator.SetInteger("HeroState", 4);
             this.healthValue -= 10;
-            invincible = true;
+            hurt.Play();
             StartCoroutine(_damager());
-            Invoke("resetInvulnerability", 5 * Time.deltaTime);
 
             if (healthValue <= 0)
             {
-                backgroundMusic.Stop();
-                backgroundMusic.loop = false;
                 gameController.endGame();
             }
         }
@@ -225,22 +234,17 @@ public class PlayerControl : MonoBehaviour {
         if (other.gameObject.CompareTag("GVibe"))
         {
             this.scoreValue += 10;
+            point.Play();
         }
 
         //getting powerups
         if (other.gameObject.CompareTag("AttackPower"))
         {
             this.scoreValue += 20;
-            this.powerValue += 1;
+            this.powerValue += 2;
+            point.Play();
         }
     }
-
-    ////remove invincibility
-    //private void resetInvulnerability()
-    //{
-    //    this.invincible = false;
-    //    Debug.Log("Invincible is " + invincible);
-    //}
 
     private void OnCollisionStay2D(Collision2D other)
     {
@@ -259,20 +263,15 @@ public class PlayerControl : MonoBehaviour {
 
     IEnumerator _damager() //colour effect when hit
     {
-        int looper = 0;
-
-        if(looper <= 5)
-        {
-            this.animator.SetInteger("HeroState", 4);
-            spriteRender.color = Color.red;
-            yield return new WaitForSeconds(0.2f);
-            spriteRender.color = Color.white;
-            yield return new WaitForSeconds(0.2f);
-            looper++;
-            //Debug.Log(looper);
-        }
-
-        
+        this.animator.SetInteger("HeroState", 4);
+        spriteRender.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        spriteRender.color = Color.white;
+        yield return new WaitForSeconds(0.2f);
+        spriteRender.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        spriteRender.color = Color.white;
+        yield return new WaitForSeconds(0.2f);
     }
 
     void Attack()

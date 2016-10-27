@@ -57,6 +57,6 @@ public class SkyControl : MonoBehaviour {
     //Resets Position
     private void reset()
     {
-        this._transform.position = new Vector2(204f, 0.28f);
+        this._transform.position = new Vector2(204f, 3.92f);
     }
 }
