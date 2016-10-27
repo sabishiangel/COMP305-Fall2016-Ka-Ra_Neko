@@ -7,7 +7,9 @@ using System.Collections;
 
 public class MenuControls : MonoBehaviour
 {
-    public Button startButton;
+
+    //Public Instance Variables
+    
     // Use this for initialization
     void Start()
     {
@@ -27,6 +29,6 @@ public class MenuControls : MonoBehaviour
 
     public void instruction_Click()
     {
-        SceneManager.LoadScene("Instruction");
+        SceneManager.LoadScene("Instructions");
     }
 }

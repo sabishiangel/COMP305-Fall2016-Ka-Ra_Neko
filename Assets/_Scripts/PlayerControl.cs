@@ -8,7 +8,6 @@ public class PlayerControl : MonoBehaviour {
     private float _move;
     private bool _isFacingLeft;
     private bool _isGrounded;
-    private bool invincible;
     private float _jump;
     private SpriteRenderer spriteRender;
     private int _healthValue;
@@ -17,8 +16,6 @@ public class PlayerControl : MonoBehaviour {
     //Public Instance Variables
     public Camera _camera;
     public Animator animator;
-    public GameObject Enemy;
-    public GameObject attack;
     public float timeBetweenFires = 3f;
     public float lastFired = -100f;
     public float attackSpeed;
@@ -36,6 +33,11 @@ public class PlayerControl : MonoBehaviour {
     public AudioSource jump;
     public AudioSource point;
     public AudioSource attackSound;
+
+    [Header("Game Objects")]
+    public GameObject Enemy;
+    public GameObject attack;
+    public GameObject thought;
 
 
 
@@ -113,7 +115,7 @@ public class PlayerControl : MonoBehaviour {
         }
 
         //Camera Movement
-        this._camera.transform.position = new Vector3(Mathf.Clamp(this._transform.position.x, 0f, 128.4f), Mathf.Clamp(this._transform.position.y, 0f, 6f), -10f);
+        this._camera.transform.position = new Vector3(Mathf.Clamp(this._transform.position.x, 0.5f, 128.4f), Mathf.Clamp(this._transform.position.y, 0f, 6f), -10f);
 
         //Attack
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -146,11 +148,11 @@ public class PlayerControl : MonoBehaviour {
         this._isFacingLeft = true;
         this._isGrounded = false;
         this.spriteRender = GetComponent<SpriteRenderer>();
-        this.invincible = false;
         this.powerValue = 0;
         this._healthValue = 100;
         this.attackSpeed = 20f;
-}
+        thought.gameObject.SetActive(false);
+    }
 
     //Flips character direction
     private void flip()
@@ -185,12 +187,18 @@ public class PlayerControl : MonoBehaviour {
             StartCoroutine(_damager());
         }
 
+        if (other.gameObject.CompareTag("Notification"))
+        {
+            thought.gameObject.SetActive(true);
+        }
+
+
         //when player reaches the goal
         if (other.gameObject.CompareTag("Finish"))
         {
-            if (this.scoreValue >= 620)
+            if (this.scoreValue >= 710)
             {
-                this.scoreValue += 157;
+                this.scoreValue += 57;
                 gameController.winGame();
             }
 

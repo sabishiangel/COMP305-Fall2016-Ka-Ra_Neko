@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 217b1d94113561e4089a0f07daf091c6
-timeCreated: 1476918423
+timeCreated: 1477546592
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -62,10 +62,10 @@ TextureImporter:
       name: BADGuy_walk1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1098
-        width: 626
-        height: 1102
+        x: 22
+        y: 1114
+        width: 587
+        height: 1067
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -75,10 +75,10 @@ TextureImporter:
       name: BADGuy_walk3
       rect:
         serializedVersion: 2
-        x: 1253
-        y: 1098
-        width: 627
-        height: 1102
+        x: 1282
+        y: 1114
+        width: 573
+        height: 1071
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -88,23 +88,23 @@ TextureImporter:
       name: BADGuy_walk2
       rect:
         serializedVersion: 2
-        x: 605
-        y: 1098
-        width: 651
-        height: 1102
+        x: 640
+        y: 1114
+        width: 600
+        height: 1071
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 25, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
       name: BADGuy_idle1
       rect:
         serializedVersion: 2
-        x: 11
-        y: 8
-        width: 605
-        height: 1085
+        x: 22
+        y: 19
+        width: 583
+        height: 1067
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -114,10 +114,10 @@ TextureImporter:
       name: BADGuy_happy
       rect:
         serializedVersion: 2
-        x: 1253
+        x: 1268
         y: 3
-        width: 627
-        height: 1095
+        width: 594
+        height: 1083
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -127,13 +127,13 @@ TextureImporter:
       name: BADGuy_idle2
       rect:
         serializedVersion: 2
-        x: 622
-        y: 0
-        width: 648
-        height: 1095
+        x: 646
+        y: 15
+        width: 591
+        height: 1068
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 17, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     outline: []

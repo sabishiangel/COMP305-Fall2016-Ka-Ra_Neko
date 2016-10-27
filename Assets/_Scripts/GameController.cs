@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour
     public Text victoryLabel;
     public Button restartButton;
     public Button instructions;
+    public Button exitInstructions;
     public Button restart2Button;
 
     [Header("Game Objects")]
@@ -34,6 +35,7 @@ public class GameController : MonoBehaviour
     public GameObject Good_Vibes;
     public GameObject bad_guy;
     public GameObject bad_boss;
+    public GameObject instructionPage;
     public ParticleSystem particle1;
     public ParticleSystem particle2;
 
@@ -55,7 +57,8 @@ public class GameController : MonoBehaviour
         backgroundMusic.loop = true;
         particle1.Stop();
         particle2.Stop();
-
+        instructionPage.gameObject.SetActive(false);
+        exitInstructions.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -118,7 +121,15 @@ public class GameController : MonoBehaviour
 
     public void instruction_click()//opens instruction screen
     {
-        SceneManager.LoadScene("Instructions");
+        instructionPage.gameObject.SetActive(true);
+        exitInstructions.gameObject.SetActive(true);
     }
+
+    public void exit_click()//opens instruction screen
+    {
+        instructionPage.gameObject.SetActive(false);
+        exitInstructions.gameObject.SetActive(false);
+    }
+
 
 }

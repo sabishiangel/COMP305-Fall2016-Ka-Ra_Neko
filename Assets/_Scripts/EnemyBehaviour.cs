@@ -5,13 +5,13 @@ public class EnemyBehaviour : MonoBehaviour {
 
     //Private Instance Variables
     private Transform _transform;
+    private Transform bulletPos;
     private Rigidbody2D _rigidbody;
     private SpriteRenderer spriteRender;
     private bool _isGrounded;
     private bool _GroundAhead;
     private bool _isFacingLeft;
     private bool _isPlayerThere;
-    private Collider2D enemy;
 
     //Public Instance Variables
     public float Speed = 5f;
@@ -19,12 +19,15 @@ public class EnemyBehaviour : MonoBehaviour {
     public float timeBetweenFires = 3f;
     public float lastFired = -100f;
     public float timeTilNextFire = 1f;
+    public GameObject attack;
+    public GameObject goodVibe;
+    public Animator animator;
+
+    [Header("Transforms")]
     public Transform sightStart;
     public Transform sightEnd;
     public Transform playerInSight;
     public Transform playerLocation;
-    public GameObject attack;
-    public GameObject goodVibe;
 
 
 
@@ -37,7 +40,6 @@ public class EnemyBehaviour : MonoBehaviour {
         this.spriteRender = GetComponent<SpriteRenderer>();
         this._isFacingLeft = true;
         this._isPlayerThere = false;
-        this.enemy = GetComponent<Collider2D>();
 
         //Makes sure player is seen
         playerLocation = GameObject.Find("Hero").transform;
@@ -64,6 +66,12 @@ public class EnemyBehaviour : MonoBehaviour {
 
         }
 
+        if (this.gameObject.CompareTag("Boss"))
+        {
+            //sets boss in default state
+            this.animator.SetInteger("BossState", 0);
+        }
+
         //Lines to help see sight
         Debug.DrawLine(this.sightStart.position, this.playerInSight.position);
         Debug.DrawLine(this.sightStart.position, this.sightEnd.position);
@@ -72,7 +80,9 @@ public class EnemyBehaviour : MonoBehaviour {
         if (this._isPlayerThere == true)
         {
             if (this.gameObject.CompareTag("Boss")) //if boss, attack ability enabled
-            { Invoke("Attack", timeTilNextFire); }
+            {
+                Invoke("Attack", timeTilNextFire);
+            }
 
             if (this.gameObject.CompareTag("Enemy"))
             {
@@ -138,14 +148,8 @@ public class EnemyBehaviour : MonoBehaviour {
 
             if (this.gameObject.name == "Boss")
             {
-                int loop = 4;
-
-                if(loop >= 0)
-                {
-                  Instantiate(goodVibe, transform.position, transform.rotation);
-                  loop++;
-                }
-                
+                Instantiate(goodVibe, transform.position, transform.rotation);
+                Instantiate(goodVibe, transform.position, transform.rotation);
             }
 
         }
@@ -173,8 +177,6 @@ public class EnemyBehaviour : MonoBehaviour {
             Vector3 theScale = _transform.localScale;
             theScale.x *= 1;
             _transform.localScale = theScale;
-
-            //Debug.Log(_transform.localScale.x);
         }
         else
         {
@@ -203,6 +205,6 @@ public class EnemyBehaviour : MonoBehaviour {
         Vector2 direction = playerLocation.transform.position - attackShot.transform.position;
 
         attackShot.GetComponent<AttackProjectiles>().setDirection(direction);
-
     }
+
 }
