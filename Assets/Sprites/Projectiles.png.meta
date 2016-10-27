@@ -1,12 +1,13 @@
 fileFormatVersion: 2
 guid: 868cd010042f73541ac1f43149e28e26
-timeCreated: 1476935761
+timeCreated: 1477362444
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: Angry_Attack
     21300002: Love_Attack
     21300004: Good_Vibes
+    21300006: blank
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -89,6 +90,19 @@ TextureImporter:
         y: 35
         width: 204
         height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: blank
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 191
+        width: 193
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -8,7 +8,6 @@ public class PlayerControl : MonoBehaviour {
     private float _move;
     private bool _isFacingLeft;
     private bool _isGrounded;
-    private bool _GroundAhead;
     private bool invincible;
     private float _jump;
     private SpriteRenderer spriteRender;
@@ -17,6 +16,7 @@ public class PlayerControl : MonoBehaviour {
 
     //Public Instance Variables
     public Camera _camera;
+    public Animator animator;
     public Transform spawnPoint;
     public AudioSource backgroundMusic;
     public GameObject Enemy;
@@ -32,7 +32,8 @@ public class PlayerControl : MonoBehaviour {
     public Transform sightStart;
     public Transform sightEnd;
 
-    public int scoreValue // updates score
+
+    public int scoreValue //updates score
     {
         get { return this.gameController.score; }
         set
@@ -75,31 +76,33 @@ public class PlayerControl : MonoBehaviour {
             this._move = Input.GetAxis("Horizontal");
             if (this._move > 0f)
             {
+                this.animator.SetInteger("HeroState", 1);
                 this._move = 1f;
-                this.flip();
                 this._isFacingLeft = false;
+                this.flip();
             }
             else if (this._move < 0f)
             {
+                this.animator.SetInteger("HeroState", 1);
                 this._move = -1f;
-                this.flip();
                 this._isFacingLeft = true;
+                this.flip();
             }
             else
             {
+                this.animator.SetInteger("HeroState", 0);
                 this._move = 0f;
             }
             //Debug.Log (this._move);
 
             //Jump Input
-            if ((Input.GetKeyDown(KeyCode.Space)) && (this._GroundAhead == false))
+            if ((Input.GetKeyDown(KeyCode.Space)))
             {
                 this._jump = 1;
             }
 
             //Movement
             this._rigidbody.AddForce(new Vector2(this._move * Mathf.Clamp(this.velocity, 1f, 10f), Mathf.Clamp(this._jump, 0f, 1f) * Mathf.Clamp(this.jumpForce, 0f, 220f)), ForceMode2D.Force);
-
         }
         else
         {
@@ -108,17 +111,14 @@ public class PlayerControl : MonoBehaviour {
         }
 
         //Camera Movement
-        this._camera.transform.position = new Vector3(Mathf.Clamp(this._transform.position.x, 0f, 128.4f), Mathf.Clamp(this._transform.position.y, 0f, 6.56f), -10f);
-
-        //Check for ground ahead
-        this._GroundAhead = Physics2D.Linecast(this.sightStart.position, this.sightEnd.position, 1 << LayerMask.NameToLayer("Solid"));
-        Debug.DrawLine(this.sightStart.position, this.sightEnd.position);
+        this._camera.transform.position = new Vector3(Mathf.Clamp(this._transform.position.x, 0f, 128.4f), Mathf.Clamp(this._transform.position.y, 0f, 6f), -10f);
 
         //Attack
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            if (this.powerValue >= 1)
+            if (this.powerValue > 0)
             {
+                this.animator.SetInteger("HeroState", 3);
                 this.Attack();
             }
 
@@ -126,6 +126,7 @@ public class PlayerControl : MonoBehaviour {
 
     }
 
+    //Initializes variables
     private void initialize()
     {
         this._transform = GetComponent<Transform>();
@@ -135,7 +136,7 @@ public class PlayerControl : MonoBehaviour {
         this._isGrounded = false;
         this.spriteRender = GetComponent<SpriteRenderer>();
         this.invincible = false;
-        this.powerLvl = 5;
+        this.powerValue = 5;
         this._healthValue = 100;
         this.attackSpeed = 20f;
 }
@@ -146,40 +147,51 @@ public class PlayerControl : MonoBehaviour {
         if (this._isFacingLeft)
         {
             spriteRender.flipX = false;
-            this._isFacingLeft = false;
-            Vector3 theScale = _transform.localScale;
-            theScale.x *= -1;
-            _transform.localScale = theScale;
+            sightEnd.transform.position = new Vector2(_transform.position.x * -1, _transform.position.y);
         }
         else
         {
             spriteRender.flipX = true;
-            this._isFacingLeft = true;
-            Vector3 theScale = _transform.localScale;
-            theScale.x *= 1;
-            _transform.localScale = theScale;
+            sightEnd.transform.position = new Vector2(_transform.position.x * 3, _transform.position.y); //flip line of sight to face right
         }
     }
 
-    //Causes events when player hits deathplane
+    
     private void OnCollisionEnter2D(Collision2D other)
     {
+        ////If spacebar is held down, ignore solids
+        //if((Input.GetKeyDown(KeyCode.Space)))
+        //{
+        //    Physics2D.IgnoreLayerCollision(2 << LayerMask.NameToLayer("Solid"), 6 << LayerMask.NameToLayer("Player"), ignore: true);
+        //}
+        
+        //Causes events when player hits deathplane
         if (other.gameObject.CompareTag("DeathPlane"))
         {
             this._transform.position = this.spawnPoint.position;
+            this.healthValue -= 10;
         }
 
+        //when player reaches the goal
         if (other.gameObject.CompareTag("Finish"))
         {
             this.scoreValue += 50;
             gameController.winGame();
         }
 
+        //hit by enemy
         if (other.gameObject.CompareTag("Enemy")) // hurt
         {
+            this.animator.SetInteger("HeroState", 4);
             this.healthValue -= 10;
             invincible = true;
-            Debug.Log(invincible);
+
+            if(invincible == true)
+            {
+                Physics2D.IgnoreCollision(Enemy.transform.GetComponent<Collider2D>(), this._transform.GetComponent<Collider2D>());
+                Debug.Log("Invincible is " + invincible);
+            }
+
             StartCoroutine(_damager());
             Invoke("resetInvulnerability", 5 * Time.deltaTime);
 
@@ -192,11 +204,12 @@ public class PlayerControl : MonoBehaviour {
 
         }
 
+        //hit by boss
         if (other.gameObject.CompareTag("Anger"))
         {
+            this.animator.SetInteger("HeroState", 4);
             this.healthValue -= 10;
             invincible = true;
-            Debug.Log(invincible);
             StartCoroutine(_damager());
             Invoke("resetInvulnerability", 5 * Time.deltaTime);
 
@@ -208,24 +221,30 @@ public class PlayerControl : MonoBehaviour {
             }
         }
 
+        //getting points
         if (other.gameObject.CompareTag("GVibe"))
         {
             this.scoreValue += 10;
         }
 
+        //getting powerups
         if (other.gameObject.CompareTag("AttackPower"))
         {
             this.scoreValue += 20;
             this.powerValue += 1;
         }
     }
-    private void resetInvulnerability()
-    {
-        this.invincible = false;
-    }
+
+    ////remove invincibility
+    //private void resetInvulnerability()
+    //{
+    //    this.invincible = false;
+    //    Debug.Log("Invincible is " + invincible);
+    //}
 
     private void OnCollisionStay2D(Collision2D other)
     {
+        //if on platform, player is grounded
         if (other.gameObject.CompareTag("Platform"))
             this._isGrounded = true;
         //Debug.Log(this._isGrounded);
@@ -233,22 +252,24 @@ public class PlayerControl : MonoBehaviour {
 
     private void OnCollisionExit2D(Collision2D other)
     {
-            this._isGrounded = false;
+        this.animator.SetInteger("HeroState", 2);
+        this._isGrounded = false;
         //Debug.Log(this._isGrounded);
     }
 
-    IEnumerator _damager() // colour effect when hit
+    IEnumerator _damager() //colour effect when hit
     {
         int looper = 0;
 
         if(looper <= 5)
         {
+            this.animator.SetInteger("HeroState", 4);
             spriteRender.color = Color.red;
             yield return new WaitForSeconds(0.2f);
             spriteRender.color = Color.white;
             yield return new WaitForSeconds(0.2f);
             looper++;
-            Debug.Log(looper);
+            //Debug.Log(looper);
         }
 
         
@@ -269,8 +290,7 @@ public class PlayerControl : MonoBehaviour {
         Vector2 direction = sightEnd.transform.position - attackShot.transform.position;
 
         attackShot.GetComponent<AttackProjectiles>().setDirection(direction);
-
-        this.powerValue -= 1;
+        this.powerValue -= 1;//after attack, reduce attack amount
 
     }
 

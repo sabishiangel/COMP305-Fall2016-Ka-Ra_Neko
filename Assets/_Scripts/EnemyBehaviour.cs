@@ -24,8 +24,8 @@ public class EnemyBehaviour : MonoBehaviour {
     public Transform playerInSight;
     public Transform playerLocation;
     public GameObject attack;
-    public GameObject player;
     public GameObject goodVibe;
+    public int counter = 5;
 
 
 
@@ -40,6 +40,7 @@ public class EnemyBehaviour : MonoBehaviour {
         this._isPlayerThere = false;
         this.enemy = GetComponent<Collider2D>();
 
+        //Makes sure player is seen
         playerLocation = GameObject.Find("Hero").transform;
         if (!playerLocation)
             Debug.Log("ERROR could not find Player!");
@@ -64,6 +65,7 @@ public class EnemyBehaviour : MonoBehaviour {
                 this.flip();
             }
 
+            //if player is in sight
             if(this._isPlayerThere == true)
             {
                 if(this.gameObject.CompareTag("Boss"))
@@ -90,19 +92,34 @@ public class EnemyBehaviour : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+
+        //flip enemy when colliding into things
         if (other.gameObject.CompareTag("Enemy"))
         { this.flip(); }
 
+        if(counter > 0)
+        {
+            if (other.gameObject.name == "Bench (" + counter + ")")
+            { this.flip(); }
+            counter = counter - 1;
+        }
+
         if (other.gameObject.name == "Bench")
+        { this.flip(); }
+
+        { this.flip(); }
+
+        if (other.gameObject.name == "Exit")
         { this.flip(); }
 
         if (other.gameObject.name == "Telebooth")
         { this.flip(); }
 
+        //when attacked by player
         if (other.gameObject.CompareTag("Love"))
         {
             Destroy(this.gameObject);
-            Instantiate(goodVibe, transform.position, transform.rotation);
+            Instantiate(goodVibe, transform.position, transform.rotation);//leaves bonus point when enemy defeated
                 
         }
 
@@ -134,7 +151,7 @@ public class EnemyBehaviour : MonoBehaviour {
         //Debug.Log(this._isGrounded);
     }
 
-    private void flip()
+    private void flip()//flip enemy when turning around
     {
         if (this._isFacingLeft)
         {

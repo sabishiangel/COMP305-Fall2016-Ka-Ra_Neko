@@ -56,6 +56,7 @@ public class GameController : MonoBehaviour
 
     }
 
+    //if player loses
     public void endGame()
     {
         this.scoreLabel.gameObject.SetActive(false);
@@ -73,7 +74,7 @@ public class GameController : MonoBehaviour
         endMusic.Play();
         endMusic.loop = true;
     }
-
+    //When player reaches the goal
     public void winGame()
     {
         this.scoreLabel.gameObject.SetActive(false);
@@ -92,9 +93,14 @@ public class GameController : MonoBehaviour
         winMusic.loop = true;
     }
 
-    public void restart_click()
+    public void restart_click()//returns to play scene start
     {
         SceneManager.LoadScene("Play");
+    }
+
+    public void instruction_click()//opens instruction screen
+    {
+        SceneManager.LoadScene("Instructions");
     }
 
 }
